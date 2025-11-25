@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pheological</title>
+    <title>pheological</title>
     <meta name="theme-color" content="#6366f1">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
@@ -150,6 +150,136 @@
             color: white;
             position: relative;
             z-index: 1;
+        }
+
+        .status-badge {
+            position: absolute;
+            right: 2px;
+            bottom: 2px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 3px solid #000;
+            z-index: 2;
+            transition: background-color 0.3s ease;
+        }
+
+        .status-badge.online {
+            background: #43b581;
+            box-shadow: 0 0 8px rgba(67, 181, 129, 0.6);
+        }
+
+        .status-badge.idle {
+            background: #faa61a;
+            box-shadow: 0 0 8px rgba(250, 166, 26, 0.6);
+        }
+
+        .status-badge.dnd {
+            background: #f04747;
+            box-shadow: 0 0 8px rgba(240, 71, 71, 0.6);
+        }
+
+        .status-badge.offline {
+            background: #747f8d;
+            box-shadow: 0 0 8px rgba(116, 127, 141, 0.4);
+        }
+
+        /* Spotify Now Playing */
+        .spotify-container {
+            width: 100%;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(30, 215, 96, 0.05);
+            border: 1px solid rgba(30, 215, 96, 0.2);
+            border-radius: 12px;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .spotify-container.active {
+            display: block;
+        }
+
+        .spotify-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            color: #1DB954;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .spotify-icon-small {
+            width: 16px;
+            height: 16px;
+        }
+
+        .spotify-content {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .spotify-album-art {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .spotify-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .spotify-song {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #fff;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .spotify-artist {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .spotify-progress-container {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .spotify-progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 0.25rem;
+        }
+
+        .spotify-progress-fill {
+            height: 100%;
+            background: #1DB954;
+            border-radius: 2px;
+            transition: width 0.3s linear;
+            box-shadow: 0 0 8px rgba(29, 185, 84, 0.5);
+        }
+
+        .spotify-time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #888;
         }
 
         @keyframes gradientMove {
@@ -492,6 +622,7 @@
                     <div class="avatar-inner">
                         P
                     </div>
+                    <span id="discord-status" class="status-badge offline"></span>
                 </div>
                 <div>
                     <h1>pheological.</h1>
@@ -518,6 +649,32 @@
                 <span class="skill-badge">Java</span>
                 <span class="skill-badge">Fabric API</span>
                 <span class="skill-badge">Minecraft Modding</span>
+            </div>
+
+            <!-- Spotify Now Playing -->
+            <div id="spotify-now-playing" class="spotify-container">
+                <div class="spotify-header">
+                    <svg class="spotify-icon-small" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.48.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+                    </svg>
+                    Currently listening to
+                </div>
+                <div class="spotify-content">
+                    <img id="spotify-album-art" class="spotify-album-art" src="" alt="Album Art">
+                    <div class="spotify-info">
+                        <div id="spotify-song" class="spotify-song">Song Name</div>
+                        <div id="spotify-artist" class="spotify-artist">Artist Name</div>
+                        <div class="spotify-progress-container">
+                            <div class="spotify-progress-bar">
+                                <div id="spotify-progress-fill" class="spotify-progress-fill" style="width: 0%"></div>
+                            </div>
+                            <div class="spotify-time">
+                                <span id="spotify-current-time">0:00</span>
+                                <span id="spotify-total-time">0:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -617,6 +774,143 @@
     let particles = [];
     const numParticles = 100;
 
+    // Lanyard WebSocket for real-time updates
+    const DISCORD_USER_ID = '551949864968257536';
+    const statusBadge = document.getElementById('discord-status');
+    const spotifyContainer = document.getElementById('spotify-now-playing');
+    const spotifyAlbumArt = document.getElementById('spotify-album-art');
+    const spotifySong = document.getElementById('spotify-song');
+    const spotifyArtist = document.getElementById('spotify-artist');
+    const spotifyProgressFill = document.getElementById('spotify-progress-fill');
+    const spotifyCurrentTime = document.getElementById('spotify-current-time');
+    const spotifyTotalTime = document.getElementById('spotify-total-time');
+
+    let spotifyData = null;
+    let progressInterval = null;
+    let ws = null;
+    let heartbeatInterval = null;
+
+    function formatTime(ms) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function updateSpotifyProgress() {
+        if (!spotifyData) return;
+
+        const now = Date.now();
+        const elapsed = now - spotifyData.timestamps.start;
+        const total = spotifyData.timestamps.end - spotifyData.timestamps.start;
+        const progress = Math.min((elapsed / total) * 100, 100);
+
+        spotifyProgressFill.style.width = `${progress}%`;
+        spotifyCurrentTime.textContent = formatTime(elapsed);
+    }
+
+    function updateSpotifyDisplay(spotify) {
+        if (!spotify) {
+            spotifyContainer.classList.remove('active');
+            spotifyData = null;
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+            return;
+        }
+
+        spotifyData = spotify;
+        spotifyContainer.classList.add('active');
+        spotifyAlbumArt.src = spotify.album_art_url;
+        spotifyAlbumArt.alt = `${spotify.album} album art`;
+        spotifySong.textContent = spotify.song;
+        spotifyArtist.textContent = spotify.artist;
+        spotifyTotalTime.textContent = formatTime(spotify.timestamps.end - spotify.timestamps.start);
+
+        // Update progress immediately
+        updateSpotifyProgress();
+
+        // Clear existing interval if any
+        if (progressInterval) {
+            clearInterval(progressInterval);
+        }
+
+        // Update progress every second
+        progressInterval = setInterval(updateSpotifyProgress, 1000);
+    }
+
+    function updateStatus(data) {
+        if (!data) return;
+
+        let status = data.discord_status;
+
+        // Map Discord API status to our CSS classes
+        if (status === 'do_not_disturb') {
+            status = 'dnd';
+        }
+
+        // Update status badge
+        statusBadge.classList.remove('online', 'idle', 'dnd', 'offline');
+        statusBadge.classList.add(status);
+
+        // Update Spotify
+        if (data.listening_to_spotify && data.spotify) {
+            updateSpotifyDisplay(data.spotify);
+        } else {
+            updateSpotifyDisplay(null);
+        }
+    }
+
+    function connectWebSocket() {
+        ws = new WebSocket('wss://api.lanyard.rest/socket');
+
+        ws.onopen = () => {
+            console.log('WebSocket connected to Lanyard');
+        };
+
+        ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+
+            switch (message.op) {
+                case 1: // Hello
+                    const heartbeatInterval = message.d.heartbeat_interval;
+                    // Subscribe to user
+                    ws.send(JSON.stringify({
+                        op: 2,
+                        d: {
+                            subscribe_to_id: DISCORD_USER_ID
+                        }
+                    }));
+                    // Start heartbeat
+                    setInterval(() => {
+                        if (ws.readyState === WebSocket.OPEN) {
+                            ws.send(JSON.stringify({ op: 3 }));
+                        }
+                    }, heartbeatInterval);
+                    break;
+
+                case 0: // Event
+                    if (message.t === 'INIT_STATE' || message.t === 'PRESENCE_UPDATE') {
+                        updateStatus(message.d);
+                    }
+                    break;
+            }
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket disconnected, reconnecting in 5 seconds...');
+            setTimeout(connectWebSocket, 5000);
+        };
+    }
+
+    // Connect to WebSocket
+    connectWebSocket();
+
     function resizeCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -629,7 +923,7 @@
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
             this.size = Math.random() * 2 + 1.5; // Increased from 1 + 0.5
-            this.speedY = -(Math.random() * 1 + 0.5);
+            this.speedY = -(Math.random() * 1 + 0.5); // Reduced speed for slower movement
             this.length = Math.random() * 80 + 30;
             this.color = `rgba(99, 102, 241, ${Math.random() * 0.4 + 0.3})`;
         }
@@ -644,7 +938,7 @@
 
         draw() {
             // Add glow effect
-            ctx.shadowBlur = 10;
+            ctx.shadowBlur = 5;
             ctx.shadowColor = '#6366f1';
             ctx.fillStyle = this.color;
             ctx.fillRect(this.x, this.y, this.size, this.length);
@@ -673,4 +967,3 @@
 </script>
 </body>
 </html>
-
