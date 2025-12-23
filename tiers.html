@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unified Tiers | Minecraft PvP Aggregator</title>
+    <title>Unified Tiers</title>
+    <link rel="icon" type="image/png" href="assets/icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -251,6 +252,25 @@
             opacity: 0.7;
         }
 
+
+        /* Logo Icon Styles */
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            object-fit: contain;
+        }
+
+        .fixed-header .logo-icon {
+            width: 1.75rem;
+            height: 1.75rem;
+        }
+
+        .page-loader-logo-icon {
+            width: 3rem;
+            height: 3rem;
+            margin-bottom: 1rem;
+        }
+
         /* Fixed Header (when results active) */
         .fixed-header {
             position: fixed;
@@ -277,6 +297,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 2rem;
+            width: 100%;
         }
 
         .fixed-header .logo {
@@ -898,7 +919,6 @@
     <!-- Page Loader -->
     <div class="page-loader" id="page-loader">
         <div class="page-loader-content">
-            <div class="page-loader-logo">UNIFIED<span class="highlight">TIERS</span></div>
             <div class="page-loader-spinner"></div>
         </div>
     </div>
