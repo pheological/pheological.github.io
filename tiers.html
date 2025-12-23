@@ -1253,6 +1253,9 @@
 
         // Reset to initial state
         function resetToInitial() {
+            // Clear URL hash
+            window.location.hash = '';
+
             mainContainer.classList.add('initial');
             mainContainer.classList.remove('results-active');
             heroSection.classList.remove('hidden');
@@ -1410,6 +1413,9 @@
         // Handle search
         async function handleSearch(input) {
             if (!input.trim()) return;
+
+            // Update URL hash with the player name
+            window.location.hash = input.trim();
 
             // Switch to results view
             mainContainer.classList.remove('initial');
@@ -1635,6 +1641,27 @@
         headerSearchForm.addEventListener('submit', (e) => {
             e.preventDefault();
             handleSearch(headerSearchInput.value);
+        });
+
+        // Check URL hash on page load and auto-search if present
+        window.addEventListener('load', () => {
+            const hash = window.location.hash.substring(1); // Remove the '#' character
+            if (hash) {
+                // Decode the hash in case it contains special characters
+                const playerName = decodeURIComponent(hash);
+                handleSearch(playerName);
+            }
+        });
+
+        // Handle hash changes (back/forward navigation)
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const playerName = decodeURIComponent(hash);
+                handleSearch(playerName);
+            } else {
+                resetToInitial();
+            }
         });
     </script>
 </body>
