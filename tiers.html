@@ -625,9 +625,39 @@
             color: #60a5fa;
         }
 
+        .player-region.region-na {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .player-region.region-sa {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+        }
+
+        .player-region.region-eu {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+
+        .player-region.region-as {
+            background: rgba(236, 72, 153, 0.1);
+            border-color: rgba(236, 72, 153, 0.3);
+            color: #ec4899;
+        }
+
+        .player-region.region-au {
+            background: rgba(249, 115, 22, 0.1);
+            border-color: rgba(249, 115, 22, 0.3);
+            color: #f97316;
+        }
+
         .player-stats {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 1rem;
             margin-top: 2rem;
             padding-top: 2rem;
@@ -689,20 +719,36 @@
         .section-header {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            justify-content: space-between;
+            gap: 1rem;
             margin-bottom: 1.5rem;
+        }
+
+        .section-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .section-indicator {
             width: 4px;
             height: 1.5rem;
-            background: #3b82f6;
             border-radius: 2px;
         }
 
+        #mctiers-section .section-indicator {
+            background: #ec4899; /* pink */
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.7);
+        }
+
+        #subtiers-section .section-indicator {
+            background: #3b82f6; /* blue */
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.7);
+        }
+
         .tier-section.shieldless .section-indicator {
-            background: #eab308;
-            box-shadow: 0 0 15px rgba(234, 179, 8, 0.5);
+            background: #eab308; /* yellow */
+            box-shadow: 0 0 25px rgba(234, 179, 8, 0.7);
         }
 
         .section-title {
@@ -710,7 +756,44 @@
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 0.2em;
+            color: #fff;
+        }
+
+        #mctiers-section .section-title {
+            text-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+        }
+
+        #subtiers-section .section-title {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+        }
+
+        #shieldless-section .section-title {
+            text-shadow: 0 0 20px rgba(234, 179, 8, 0.6);
+        }
+
+        .tier-info-container {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .tier-info-item {
+            display: flex;
+            align-items: baseline;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .tier-info-label {
             color: #52525b;
+            margin-right: 0.5rem;
+        }
+
+        .tier-info-value {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #a1a1aa;
         }
 
         .tier-grid {
@@ -846,6 +929,54 @@
             background: transparent !important;
             border: none !important;
             text-shadow: 0 0 20px rgba(249, 115, 22, 0.5), 0 0 10px rgba(249, 115, 22, 0.3);
+        }
+
+        .tier-ht4 {
+            color: #00b4ff;
+            background: rgba(0, 180, 255, 0.1);
+            border-color: rgba(0, 180, 255, 0.3);
+        }
+
+        .tier-peak.tier-ht4 {
+            background: transparent !important;
+            border: none !important;
+            text-shadow: 0 0 20px rgba(0, 180, 255, 0.5), 0 0 10px rgba(0, 180, 255, 0.3);
+        }
+
+        .tier-lt4 {
+            color: #5b9bd5;
+            background: rgba(91, 155, 213, 0.15);
+            border-color: rgba(91, 155, 213, 0.35);
+        }
+
+        .tier-peak.tier-lt4 {
+            background: transparent !important;
+            border: none !important;
+            text-shadow: 0 0 20px rgba(91, 155, 213, 0.5), 0 0 10px rgba(91, 155, 213, 0.4);
+        }
+
+        .tier-ht5 {
+            color: #a1a1aa;
+            background: rgba(161, 161, 170, 0.12);
+            border-color: rgba(161, 161, 170, 0.25);
+        }
+
+        .tier-peak.tier-ht5 {
+            background: transparent !important;
+            border: none !important;
+            text-shadow: 0 0 20px rgba(161, 161, 170, 0.4), 0 0 10px rgba(161, 161, 170, 0.3);
+        }
+
+        .tier-lt5 {
+            color: #71717a;
+            background: rgba(113, 113, 122, 0.08);
+            border-color: rgba(113, 113, 122, 0.15);
+        }
+
+        .tier-peak.tier-lt5 {
+            background: transparent !important;
+            border: none !important;
+            text-shadow: 0 0 20px rgba(113, 113, 122, 0.3), 0 0 10px rgba(113, 113, 122, 0.2);
         }
 
         .tier-default {
@@ -1046,6 +1177,10 @@
                             <div class="stat-label">Lists</div>
                             <div class="stat-value" id="stat-lists">0</div>
                         </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Avg Tier</div>
+                            <div class="stat-value" id="stat-avg-tier">-</div>
+                        </div>
                     </div>
                 </aside>
 
@@ -1054,8 +1189,10 @@
                     <!-- MCTiers Section -->
                     <div class="tier-section glass" id="mctiers-section" style="display: none;">
                         <div class="section-header">
-                            <div class="section-indicator"></div>
-                            <h3 class="section-title">MCTiers Rankings</h3>
+                            <div class="section-title-wrapper">
+                                <div class="section-indicator"></div>
+                                <h3 class="section-title">MCTiers Rankings</h3>
+                            </div>
                         </div>
                         <div class="tier-grid" id="mctiers-grid"></div>
                     </div>
@@ -1063,8 +1200,10 @@
                     <!-- SubTiers Section -->
                     <div class="tier-section glass" id="subtiers-section" style="display: none;">
                         <div class="section-header">
-                            <div class="section-indicator"></div>
-                            <h3 class="section-title">SubTiers Rankings</h3>
+                            <div class="section-title-wrapper">
+                                <div class="section-indicator"></div>
+                                <h3 class="section-title">SubTiers Rankings</h3>
+                            </div>
                         </div>
                         <div class="tier-grid" id="subtiers-grid"></div>
                     </div>
@@ -1072,8 +1211,10 @@
                     <!-- Shieldless Section -->
                     <div class="tier-section glass shieldless" id="shieldless-section" style="display: none;">
                         <div class="section-header">
-                            <div class="section-indicator"></div>
-                            <h3 class="section-title">Shieldless UHC</h3>
+                            <div class="section-title-wrapper">
+                                <div class="section-indicator"></div>
+                                <h3 class="section-title">Shieldless UHC</h3>
+                            </div>
                         </div>
                         <div class="tier-grid" id="shieldless-grid"></div>
                     </div>
@@ -1133,12 +1274,41 @@
                 if (t.startsWith('lt2')) return 'tier-lt2';
                 if (t.startsWith('ht3')) return 'tier-ht3';
                 if (t.startsWith('lt3')) return 'tier-lt3';
+                if (t.startsWith('ht4')) return 'tier-ht4';
+                if (t.startsWith('lt4')) return 'tier-lt4';
+                if (t.startsWith('ht5')) return 'tier-ht5';
+                if (t.startsWith('lt5')) return 'tier-lt5';
                 return 'tier-default';
             }
             if (tier === 1) return 'tier-t1';
             if (tier === 2) return pos === 0 ? 'tier-ht2' : 'tier-lt2';
             if (tier === 3) return pos === 0 ? 'tier-ht3' : 'tier-lt3';
+            if (tier === 4) return pos === 0 ? 'tier-ht4' : 'tier-lt4';
+            if (tier === 5) return pos === 0 ? 'tier-ht5' : 'tier-lt5';
             return 'tier-default';
+        }
+
+        // Set region with appropriate color class
+        function setRegion(region) {
+            const regionElement = document.getElementById('player-region');
+            regionElement.textContent = region;
+
+            // Remove all region classes
+            regionElement.classList.remove('region-na', 'region-sa', 'region-eu', 'region-as', 'region-au');
+
+            // Add appropriate region class based on region code
+            const regionUpper = region.toUpperCase();
+            if (regionUpper === 'NA') {
+                regionElement.classList.add('region-na');
+            } else if (regionUpper === 'SA') {
+                regionElement.classList.add('region-sa');
+            } else if (regionUpper === 'EU') {
+                regionElement.classList.add('region-eu');
+            } else if (regionUpper === 'AS' || regionUpper === 'ASIA') {
+                regionElement.classList.add('region-as');
+            } else if (regionUpper === 'AU' || regionUpper === 'OCE' || regionUpper === 'OCEANIA') {
+                regionElement.classList.add('region-au');
+            }
         }
 
         // Format tier display
@@ -1146,6 +1316,46 @@
             if (typeof tier === 'string') return tier.toUpperCase();
             const prefix = pos === 0 ? 'H' : 'L';
             return `${prefix}T${tier}`;
+        }
+
+        // Convert tier to numeric value for averaging (LT5=1, HT5=2, LT4=3, HT4=4, ..., HT1=10)
+        function tierToNumeric(tier, pos) {
+            if (typeof tier === 'string') {
+                const t = tier.toLowerCase();
+                if (t.includes('lt5')) return 1;
+                if (t.includes('ht5')) return 2;
+                if (t.includes('lt4')) return 3;
+                if (t.includes('ht4')) return 4;
+                if (t.includes('lt3')) return 5;
+                if (t.includes('ht3')) return 6;
+                if (t.includes('lt2')) return 7;
+                if (t.includes('ht2')) return 8;
+                if (t.includes('lt1') || t.includes('t1')) return 9;
+                if (t.includes('ht1')) return 10;
+                return 0;
+            }
+            // tier is a number (1-5), pos is 0 (high) or 1 (low)
+            if (tier === 5) return pos === 0 ? 2 : 1;  // HT5=2, LT5=1
+            if (tier === 4) return pos === 0 ? 4 : 3;  // HT4=4, LT4=3
+            if (tier === 3) return pos === 0 ? 6 : 5;  // HT3=6, LT3=5
+            if (tier === 2) return pos === 0 ? 8 : 7;  // HT2=8, LT2=7
+            if (tier === 1) return pos === 0 ? 10 : 9; // HT1=10, LT1=9 (T1 is usually just T1, no high/low)
+            return 0;
+        }
+
+        // Convert numeric value back to tier string for display
+        function numericToTier(value) {
+            const rounded = Math.round(value);
+            if (rounded <= 1) return 'LT5';
+            if (rounded === 2) return 'HT5';
+            if (rounded === 3) return 'LT4';
+            if (rounded === 4) return 'HT4';
+            if (rounded === 5) return 'LT3';
+            if (rounded === 6) return 'HT3';
+            if (rounded === 7) return 'LT2';
+            if (rounded === 8) return 'HT2';
+            if (rounded >= 9) return 'T1';
+            return '-';
         }
 
         // Create tier card HTML
@@ -1259,21 +1469,46 @@
                 let totalRanked = 0;
                 let listsTracked = 0;
                 let foundAnyData = false;
+                let tierValues = []; // Track all tier values for averaging
 
                 // Process MCTiers
                 const mctSection = document.getElementById('mctiers-section');
                 const mctGrid = document.getElementById('mctiers-grid');
+                mctSection.querySelector('.tier-info-container')?.remove(); // Clear previous
                 if (mctiersRes && mctiersRes.rankings && Object.keys(mctiersRes.rankings).length > 0) {
                     const keys = Object.keys(mctiersRes.rankings);
-                    const cards = keys.map(k => createTierCard(k, mctiersRes.rankings[k], 'mctiers')).filter(card => card !== '');
+                    const cards = keys.map(k => {
+                        const ranking = mctiersRes.rankings[k];
+                        // Add tier to average calculation
+                        const numericTier = tierToNumeric(ranking.tier, ranking.pos);
+                        if (numericTier > 0) tierValues.push(numericTier);
+                        return createTierCard(k, ranking, 'mctiers');
+                    }).filter(card => card !== '');
                     if (cards.length > 0) {
                         mctSection.style.display = 'block';
                         mctGrid.innerHTML = cards.join('');
+
+                        if (mctiersRes.overall !== undefined && mctiersRes.points !== undefined) {
+                            const infoContainer = document.createElement('div');
+                            infoContainer.className = 'tier-info-container';
+                            infoContainer.innerHTML = `
+                                <div class="tier-info-item">
+                                    <span class="tier-info-label">Rank</span>
+                                    <span class="tier-info-value">#${mctiersRes.overall.toLocaleString()}</span>
+                                </div>
+                                <div class="tier-info-item">
+                                    <span class="tier-info-label">Points</span>
+                                    <span class="tier-info-value">${mctiersRes.points}</span>
+                                </div>
+                            `;
+                            mctSection.querySelector('.section-header').appendChild(infoContainer);
+                        }
+
                         totalRanked += cards.length;
                         listsTracked++;
                         foundAnyData = true;
                         document.getElementById('player-name').textContent = mctiersRes.name;
-                        document.getElementById('player-region').textContent = mctiersRes.region;
+                        setRegion(mctiersRes.region);
                     } else {
                         mctSection.style.display = 'none';
                     }
@@ -1284,18 +1519,42 @@
                 // Process SubTiers
                 const subSection = document.getElementById('subtiers-section');
                 const subGrid = document.getElementById('subtiers-grid');
+                subSection.querySelector('.tier-info-container')?.remove(); // Clear previous
                 if (subtiersRes && subtiersRes.rankings && Object.keys(subtiersRes.rankings).length > 0) {
                     const keys = Object.keys(subtiersRes.rankings);
-                    const cards = keys.map(k => createTierCard(k, subtiersRes.rankings[k], 'subtiers')).filter(card => card !== '');
+                    const cards = keys.map(k => {
+                        const ranking = subtiersRes.rankings[k];
+                        // Add tier to average calculation
+                        const numericTier = tierToNumeric(ranking.tier, ranking.pos);
+                        if (numericTier > 0) tierValues.push(numericTier);
+                        return createTierCard(k, ranking, 'subtiers');
+                    }).filter(card => card !== '');
                     if (cards.length > 0) {
                         subSection.style.display = 'block';
                         subGrid.innerHTML = cards.join('');
+
+                        if (subtiersRes.overall !== undefined && subtiersRes.points !== undefined) {
+                            const infoContainer = document.createElement('div');
+                            infoContainer.className = 'tier-info-container';
+                            infoContainer.innerHTML = `
+                                <div class="tier-info-item">
+                                    <span class="tier-info-label">Rank</span>
+                                    <span class="tier-info-value">#${subtiersRes.overall.toLocaleString()}</span>
+                                </div>
+                                <div class="tier-info-item">
+                                    <span class="tier-info-label">Points</span>
+                                    <span class="tier-info-value">${subtiersRes.points}</span>
+                                </div>
+                            `;
+                            subSection.querySelector('.section-header').appendChild(infoContainer);
+                        }
+
                         totalRanked += cards.length;
                         listsTracked++;
                         foundAnyData = true;
                         if (!mctiersRes) {
                             document.getElementById('player-name').textContent = subtiersRes.name;
-                            document.getElementById('player-region').textContent = subtiersRes.region;
+                            setRegion(subtiersRes.region);
                         }
                     } else {
                         subSection.style.display = 'none';
@@ -1310,6 +1569,10 @@
                 if (shieldlessRes && shieldlessRes.tier &&
                     !shieldlessRes.tier.toLowerCase().includes('null') &&
                     shieldlessRes.tier.trim() !== '') {
+
+                    // Add tier to average calculation
+                    const numericTier = tierToNumeric(shieldlessRes.tier, 0);
+                    if (numericTier > 0) tierValues.push(numericTier);
 
                     shieldSection.style.display = 'block';
                     shieldGrid.innerHTML = createTierCard('shieldless', {
@@ -1327,7 +1590,7 @@
                     // Set player name/region from shieldless if we don't have it from other sources
                     if (!mctiersRes && !subtiersRes) {
                         document.getElementById('player-name').textContent = shieldlessRes.minecraft_username || input;
-                        document.getElementById('player-region').textContent = shieldlessRes.region || 'N/A';
+                        setRegion(shieldlessRes.region || 'N/A');
                     }
                 } else {
                     shieldSection.style.display = 'none';
@@ -1336,6 +1599,15 @@
                 // Update stats
                 document.getElementById('stat-ranked').textContent = totalRanked;
                 document.getElementById('stat-lists').textContent = listsTracked;
+
+                // Calculate and display average tier
+                if (tierValues.length > 0) {
+                    const avgValue = tierValues.reduce((a, b) => a + b, 0) / tierValues.length;
+                    const avgTierDisplay = numericToTier(avgValue);
+                    document.getElementById('stat-avg-tier').textContent = avgTierDisplay;
+                } else {
+                    document.getElementById('stat-avg-tier').textContent = '-';
+                }
 
                 // Check if ANY data exists from ANY of the three APIs
                 if (!foundAnyData) {
