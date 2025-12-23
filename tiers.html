@@ -786,21 +786,18 @@
             line-height: 1.4;
         }
 
-        .tier-badge {
-            padding: 0.375rem 0.625rem;
-            border-radius: 0.5rem;
-            font-size: 0.7rem;
-            font-weight: 800;
-            border: 1px solid;
-            transition: all 0.3s ease;
-        }
 
         /* Tier Colors */
         .tier-t1 {
             color: #fbbf24;
             background: rgba(251, 191, 36, 0.1);
             border-color: rgba(251, 191, 36, 0.3);
-            box-shadow: 0 0 15px rgba(251, 191, 36, 0.15);
+        }
+
+        .tier-peak.tier-t1 {
+            background: transparent !important;
+            border: none !important;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.6), 0 0 10px rgba(251, 191, 36, 0.4);
         }
 
         .tier-ht2 {
@@ -809,10 +806,22 @@
             border-color: rgba(229, 231, 235, 0.3);
         }
 
+        .tier-peak.tier-ht2 {
+            background: transparent !important;
+            border: none !important;
+            text-shadow: 0 0 20px rgba(229, 231, 235, 0.5), 0 0 10px rgba(229, 231, 235, 0.3);
+        }
+
         .tier-lt2 {
             color: #9ca3af;
             background: rgba(156, 163, 175, 0.1);
             border-color: rgba(156, 163, 175, 0.2);
+        }
+
+        .tier-peak.tier-lt2 {
+            background: transparent !important;
+            border: none !important;
+            text-shadow: 0 0 20px rgba(156, 163, 175, 0.4), 0 0 10px rgba(156, 163, 175, 0.3);
         }
 
         .tier-ht3 {
@@ -821,10 +830,22 @@
             border-color: rgba(253, 186, 116, 0.3);
         }
 
+        .tier-peak.tier-ht3 {
+            background: transparent !important;
+            border: none !important;
+            text-shadow: 0 0 20px rgba(253, 186, 116, 0.5), 0 0 10px rgba(253, 186, 116, 0.3);
+        }
+
         .tier-lt3 {
             color: #f97316;
             background: rgba(249, 115, 22, 0.1);
             border-color: rgba(249, 115, 22, 0.2);
+        }
+
+        .tier-peak.tier-lt3 {
+            background: transparent !important;
+            border: none !important;
+            text-shadow: 0 0 20px rgba(249, 115, 22, 0.5), 0 0 10px rgba(249, 115, 22, 0.3);
         }
 
         .tier-default {
@@ -840,60 +861,72 @@
             opacity: 0.7;
         }
 
-        /* Peak Popup */
-        .peak-popup {
+        .tier-peak.tier-retired {
+            background: transparent !important;
+            border: none !important;
+            text-shadow: 0 0 20px rgba(167, 139, 250, 0.4), 0 0 10px rgba(167, 139, 250, 0.3);
+        }
+
+        /* Tier Badge with Peak Info */
+        .tier-badge {
+            position: relative;
+            padding: 0.375rem 0.625rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            border: 1px solid;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 3.5rem;
+            text-align: center;
+            overflow: visible;
+            cursor: default;
+        }
+
+        .tier-badge.has-peak {
+            /* Only badges with peak info will have special hover behavior */
+        }
+
+        .tier-card:hover .tier-badge.has-peak {
+            padding: 0.5rem 0.75rem;
+        }
+
+        .tier-current, .tier-peak {
+            display: block;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tier-peak {
             position: absolute;
-            left: calc(100% + 0.75rem);
             top: 50%;
-            transform: translateY(-50%) translateX(-8px) scale(0.92);
-            padding: 0.625rem 0.875rem;
-            background: linear-gradient(135deg, rgba(20, 20, 25, 0.98), rgba(30, 30, 35, 0.98));
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 0.75rem;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
             opacity: 0;
-            visibility: hidden;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             white-space: nowrap;
-            z-index: 50;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            pointer-events: none;
         }
 
-        .peak-popup::before {
-            content: '';
-            position: absolute;
-            left: -4px;
-            top: 50%;
-            transform: translateY(-50%) rotate(45deg);
-            width: 8px;
-            height: 8px;
-            background: rgba(20, 20, 25, 0.98);
-            border-left: 1px solid rgba(255, 255, 255, 0.15);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        .tier-badge.has-peak .tier-current {
+            /* Only animate if badge has peak */
         }
 
-        .tier-card:hover .peak-popup {
+        .tier-card:hover .tier-badge.has-peak .tier-current {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .tier-card:hover .tier-badge.has-peak .tier-peak {
             opacity: 1;
-            visibility: visible;
-            transform: translateY(-50%) translateX(0) scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
-        .peak-label {
-            font-size: 0.6rem;
+        .tier-peak-label {
+            font-size: 0.5rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #71717a;
+            letter-spacing: 0.08em;
+            opacity: 0.5;
             display: block;
-            margin-bottom: 0.25rem;
-        }
-
-        .peak-value {
-            font-size: 0.85rem;
-            font-weight: 900;
-            letter-spacing: 0.02em;
-            display: block;
+            margin-bottom: 0.15rem;
         }
 
         /* Empty State */
@@ -1151,13 +1184,15 @@
                     <div class="tier-info">
                         <div class="tier-name">${displayName}</div>
                     </div>
-                    <div class="tier-badge ${tierClass}">${tierDisplay}</div>
-                    ${showPeak ? `
-                        <div class="peak-popup">
-                            <span class="peak-label">Peak Career</span>
-                            <span class="peak-value ${getTierClass(ranking.peak_tier, ranking.peak_pos)}">${peakDisplay}</span>
-                        </div>
-                    ` : ''}
+                    <div class="tier-badge ${tierClass}${showPeak ? ' has-peak' : ''}">
+                        <span class="tier-current">${tierDisplay}</span>
+                        ${showPeak ? `
+                            <span class="tier-peak ${getTierClass(ranking.peak_tier, ranking.peak_pos)}">
+                                <span class="tier-peak-label">Peak</span>
+                                ${peakDisplay}
+                            </span>
+                        ` : ''}
+                    </div>
                 </div>
             `;
         }
