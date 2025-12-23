@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Tiers | Minecraft PvP Aggregator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        ::selection {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        /* Background Effects */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: grid-pan 80s linear infinite;
+        }
+
+        @keyframes grid-pan {
+            from { background-position: 0 0; }
+            to { background-position: 800px 800px; }
+        }
+
+        .spotlight {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: -1;
+            transition: transform 0.3s ease-out;
+        }
+
+        /* Glass Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Main Container */
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .main-container.initial {
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .main-container.results-active {
+            justify-content: flex-start;
+            padding-top: 0;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            animation: heroFadeIn 1s ease-out 0.2s forwards;
+        }
+
+        .hero-section.hidden {
+            display: none;
+        }
+
+        @keyframes heroFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            margin-bottom: 1rem;
+            line-height: 1;
+            opacity: 0;
+            animation: slideUpFade 0.8s ease-out 0.4s forwards;
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title .highlight {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8, #3b82f6);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite;
+            text-shadow: 0 0 60px rgba(59, 130, 246, 0.5);
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+        }
+
+        .hero-subtitle {
+            color: #71717a;
+            font-size: 1.1rem;
+            font-weight: 500;
+            max-width: 500px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+            opacity: 0;
+            animation: slideUpFade 0.8s ease-out 0.6s forwards;
+        }
+
+        /* Search Form */
+        .search-container {
+            width: 100%;
+            max-width: 550px;
+            margin: 0 auto 2rem;
+        }
+
+        .search-form {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1.25rem 4rem 1.25rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: #52525b;
+        }
+
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0.75rem;
+            background: #3b82f6;
+            border: none;
+            border-radius: 0.75rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-btn:hover {
+            background: #2563eb;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .search-btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .search-btn svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        /* Badges */
+        .badges {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 2rem;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #71717a;
+        }
+
+        .badge.soon {
+            background: rgba(234, 179, 8, 0.05);
+            border-color: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+        }
+
+        .badge.soon::after {
+            content: " • SOON";
+            font-size: 0.55rem;
+            opacity: 0.7;
+        }
+
+        /* Fixed Header (when results active) */
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: none;
+        }
+
+        .fixed-header.visible {
+            display: block;
+        }
+
+        .fixed-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .fixed-header .logo {
+            font-size: 1.25rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .fixed-header .logo:hover {
+            opacity: 0.8;
+        }
+
+        .fixed-header .logo .highlight {
+            color: #3b82f6;
+        }
+
+        .fixed-header .search-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0;
+        }
+
+        .fixed-header .search-input {
+            padding: 0.875rem 3.5rem 0.875rem 1.25rem;
+            font-size: 0.95rem;
+        }
+
+        .fixed-header .search-btn {
+            padding: 0.5rem;
+        }
+
+        .fixed-header .search-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            padding: 6rem 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .results-section.visible {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Loading State */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5rem 2rem;
+        }
+
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 3px solid rgba(59, 130, 246, 0.2);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #71717a;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        /* Error State */
+        .error-state {
+            display: none;
+            max-width: 400px;
+            margin: 3rem auto;
+            padding: 2.5rem;
+            text-align: center;
+            border-radius: 1.5rem;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .error-state.visible {
+            display: block;
+            animation: errorSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes errorSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .error-icon {
+            width: 4rem;
+            height: 4rem;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            animation: errorIconPulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes errorIconPulse {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.15);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .error-icon svg {
+            width: 2rem;
+            height: 2rem;
+            color: #ef4444;
+            animation: errorIconShake 0.5s ease-in-out 0.3s;
+        }
+
+        @keyframes errorIconShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotate(-5deg); }
+            75% { transform: translateX(5px) rotate(5deg); }
+        }
+
+        .error-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            animation: errorTextFadeIn 0.4s ease-out 0.2s backwards;
+        }
+
+        @keyframes errorTextFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error-message {
+            color: #71717a;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            animation: errorTextFadeIn 0.4s ease-out 0.3s backwards;
+        }
+
+        .error-btn {
+            color: #3b82f6;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            animation: errorTextFadeIn 0.4s ease-out 0.4s backwards;
+            transition: all 0.2s ease;
+        }
+
+        .error-btn:hover {
+            text-decoration: underline;
+            transform: translateY(-2px);
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Player Card */
+        .player-card {
+            position: sticky;
+            top: 6rem;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            text-align: center;
+        }
+
+        .player-avatar-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .player-avatar-glow {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0.1) 50%, transparent 70%);
+            filter: blur(30px);
+            border-radius: 50%;
+            z-index: 0;
+            transition: all 0.5s ease;
+        }
+
+        .player-avatar-glow.golden {
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.6) 0%, rgba(234, 179, 8, 0.3) 40%, rgba(251, 191, 36, 0.2) 60%, transparent 80%);
+            filter: blur(40px);
+            animation: goldenPulse 1.5s ease-in-out forwards;
+        }
+
+        @keyframes goldenPulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .player-avatar {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            z-index: 1;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+            transition: all 0.5s ease;
+            border-radius: 8px;
+        }
+
+        .player-avatar.golden {
+            filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.8)) drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+            animation: goldenGlow 1.5s ease-in-out forwards;
+        }
+
+        @keyframes goldenGlow {
+            0% {
+                filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.6)) drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px rgba(251, 191, 36, 1)) drop-shadow(0 0 60px rgba(234, 179, 8, 0.6)) drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+            }
+            100% {
+                filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.8)) drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+            }
+        }
+
+        .player-name {
+            font-size: 1.75rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            transition: all 0.5s ease;
+        }
+
+        .player-name.golden {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #fbbf24, #eab308);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: goldenShine 2s ease-in-out forwards;
+            text-shadow: 0 0 40px rgba(251, 191, 36, 0.5);
+            filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.6));
+        }
+
+        @keyframes goldenShine {
+            0% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+            100% { background-position: 0% center; }
+        }
+
+        .player-region {
+            display: inline-block;
+            padding: 0.375rem 0.875rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 2rem;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #60a5fa;
+        }
+
+        .player-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.5s ease;
+        }
+
+        .player-stats.golden {
+            border-top: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #52525b;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            transition: all 0.5s ease;
+        }
+
+        .player-stats.golden .stat-value {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.4));
+        }
+
+        /* Tiers Grid */
+        .tiers-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .tier-section {
+            padding: 2rem;
+            border-radius: 1.5rem;
+            animation: fadeIn 0.5s ease-out backwards;
+        }
+
+        .tier-section:nth-child(2) { animation-delay: 0.1s; }
+        .tier-section:nth-child(3) { animation-delay: 0.2s; }
+
+        .tier-section.shieldless {
+            border-color: rgba(234, 179, 8, 0.15);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-indicator {
+            width: 4px;
+            height: 1.5rem;
+            background: #3b82f6;
+            border-radius: 2px;
+        }
+
+        .tier-section.shieldless .section-indicator {
+            background: #eab308;
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.5);
+        }
+
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #52525b;
+        }
+
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+
+        /* Tier Card */
+        .tier-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.875rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+        }
+
+        .tier-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateX(4px);
+        }
+
+        .tier-card.retired {
+            background: rgba(167, 139, 250, 0.08);
+            border-color: rgba(167, 139, 250, 0.25);
+            opacity: 0.8;
+        }
+
+        .tier-card.retired:hover {
+            background: rgba(167, 139, 250, 0.12);
+            border-color: rgba(167, 139, 250, 0.4);
+        }
+
+        .tier-icon {
+            width: 2rem;
+            height: 2rem;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .tier-card:hover .tier-icon {
+            opacity: 1;
+        }
+
+        .tier-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tier-game {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #71717a;
+            margin-bottom: 0.125rem;
+        }
+
+        .tier-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #e4e4e7;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.4;
+        }
+
+        .tier-badge {
+            padding: 0.375rem 0.625rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            border: 1px solid;
+            transition: all 0.3s ease;
+        }
+
+        /* Tier Colors */
+        .tier-t1 {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+            border-color: rgba(251, 191, 36, 0.3);
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.15);
+        }
+
+        .tier-ht2 {
+            color: #e5e7eb;
+            background: rgba(229, 231, 235, 0.1);
+            border-color: rgba(229, 231, 235, 0.3);
+        }
+
+        .tier-lt2 {
+            color: #9ca3af;
+            background: rgba(156, 163, 175, 0.1);
+            border-color: rgba(156, 163, 175, 0.2);
+        }
+
+        .tier-ht3 {
+            color: #fdba74;
+            background: rgba(253, 186, 116, 0.1);
+            border-color: rgba(253, 186, 116, 0.3);
+        }
+
+        .tier-lt3 {
+            color: #f97316;
+            background: rgba(249, 115, 22, 0.1);
+            border-color: rgba(249, 115, 22, 0.2);
+        }
+
+        .tier-default {
+            color: #71717a;
+            background: rgba(113, 113, 122, 0.1);
+            border-color: rgba(113, 113, 122, 0.2);
+        }
+
+        .tier-retired {
+            color: #a78bfa;
+            background: rgba(167, 139, 250, 0.1);
+            border-color: rgba(167, 139, 250, 0.3);
+            opacity: 0.7;
+        }
+
+        /* Peak Popup */
+        .peak-popup {
+            position: absolute;
+            left: calc(100% + 0.75rem);
+            top: 50%;
+            transform: translateY(-50%) translateX(-8px) scale(0.92);
+            padding: 0.625rem 0.875rem;
+            background: linear-gradient(135deg, rgba(20, 20, 25, 0.98), rgba(30, 30, 35, 0.98));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0.75rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            z-index: 50;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        }
+
+        .peak-popup::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+            width: 8px;
+            height: 8px;
+            background: rgba(20, 20, 25, 0.98);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .tier-card:hover .peak-popup {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) translateX(0) scale(1);
+        }
+
+        .peak-label {
+            font-size: 0.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #71717a;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .peak-value {
+            font-size: 0.85rem;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+            display: block;
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: none;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 1.5rem;
+        }
+
+        .empty-state.visible {
+            display: block;
+        }
+
+        .empty-state p {
+            color: #52525b;
+            font-weight: 600;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader" id="page-loader">
+        <div class="page-loader-content">
+            <div class="page-loader-logo">UNIFIED<span class="highlight">TIERS</span></div>
+            <div class="page-loader-spinner"></div>
+        </div>
+    </div>
+
+    <div class="grid-bg"></div>
+    <div class="spotlight" id="spotlight"></div>
+
+    <!-- Fixed Header (visible when results shown) -->
+    <header class="fixed-header" id="fixed-header">
+        <div class="fixed-header-content">
+            <div class="logo" onclick="resetToInitial()" title="Back to home">UNIFIED<span class="highlight">TIERS</span></div>
+            <div class="search-container">
+                <form class="search-form" id="header-search-form">
+                    <input type="text" class="search-input" id="header-search-input" placeholder="Search player..." autocomplete="off">
+                    <button type="submit" class="search-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container initial" id="main-container">
+        <!-- Hero Section (visible initially) -->
+        <section class="hero-section" id="hero-section">
+            <h1 class="hero-title">
+                UNIFIED<span class="highlight">TIERS</span>
+            </h1>
+            <p class="hero-subtitle">
+                A high-fidelity dashboard for Minecraft PvP rankings.<br>
+                MCTiers, SubTiers, and Shieldless UHC — all in one place.
+            </p>
+
+            <div class="search-container">
+                <form class="search-form" id="hero-search-form">
+                    <input type="text" class="search-input" id="hero-search-input" placeholder="Search username or UUID..." autocomplete="off">
+                    <button type="submit" class="search-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+
+            <div class="badges">
+                <span class="badge">MCTiers</span>
+                <span class="badge">SubTiers</span>
+                <span class="badge">Shieldless UHC</span>
+                <span class="badge soon">PvPTiers</span>
+            </div>
+        </section>
+
+        <!-- Results Section (hidden initially) -->
+        <section class="results-section" id="results-section">
+            <!-- Loading State -->
+            <div class="loading-state" id="loading-state">
+                <div class="spinner"></div>
+                <p class="loading-text">Aggregating Player Rankings...</p>
+            </div>
+
+            <!-- Error State -->
+            <div class="error-state glass" id="error-state">
+                <div class="error-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <h3 class="error-title">Player Not Found</h3>
+                <p class="error-message" id="error-message">We couldn't locate that player on any tracked tierlists.</p>
+                <button class="error-btn" onclick="resetToInitial()">Try Again</button>
+            </div>
+
+            <!-- Data Container -->
+            <div class="results-grid" id="data-container">
+                <!-- Player Sidebar -->
+                <aside class="player-card glass" id="player-card">
+                    <div class="player-avatar-wrapper">
+                        <div class="player-avatar-glow"></div>
+                        <img class="player-avatar" id="player-avatar" src="" alt="">
+                    </div>
+                    <h2 class="player-name" id="player-name">Unknown</h2>
+                    <span class="player-region" id="player-region">N/A</span>
+                    <div class="player-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Ranked</div>
+                            <div class="stat-value" id="stat-ranked">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Lists</div>
+                            <div class="stat-value" id="stat-lists">0</div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Tiers Container -->
+                <div class="tiers-container" id="tiers-container">
+                    <!-- MCTiers Section -->
+                    <div class="tier-section glass" id="mctiers-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-indicator"></div>
+                            <h3 class="section-title">MCTiers Rankings</h3>
+                        </div>
+                        <div class="tier-grid" id="mctiers-grid"></div>
+                    </div>
+
+                    <!-- SubTiers Section -->
+                    <div class="tier-section glass" id="subtiers-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-indicator"></div>
+                            <h3 class="section-title">SubTiers Rankings</h3>
+                        </div>
+                        <div class="tier-grid" id="subtiers-grid"></div>
+                    </div>
+
+                    <!-- Shieldless Section -->
+                    <div class="tier-section glass shieldless" id="shieldless-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-indicator"></div>
+                            <h3 class="section-title">Shieldless UHC</h3>
+                        </div>
+                        <div class="tier-grid" id="shieldless-grid"></div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state glass" id="empty-state">
+                        <p>No ranking data found for this player on any supported lists.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // DOM Elements
+        const spotlight = document.getElementById('spotlight');
+        const mainContainer = document.getElementById('main-container');
+        const heroSection = document.getElementById('hero-section');
+        const fixedHeader = document.getElementById('fixed-header');
+        const resultsSection = document.getElementById('results-section');
+        const loadingState = document.getElementById('loading-state');
+        const errorState = document.getElementById('error-state');
+        const dataContainer = document.getElementById('data-container');
+
+        const heroSearchForm = document.getElementById('hero-search-form');
+        const heroSearchInput = document.getElementById('hero-search-input');
+        const headerSearchForm = document.getElementById('header-search-form');
+        const headerSearchInput = document.getElementById('header-search-input');
+
+        // Spotlight effect
+        window.addEventListener('mousemove', e => {
+            const x = e.clientX - 400;
+            const y = e.clientY - 400;
+            spotlight.style.transform = `translate(${x}px, ${y}px)`;
+        });
+
+        // Reset to initial state
+        function resetToInitial() {
+            mainContainer.classList.add('initial');
+            mainContainer.classList.remove('results-active');
+            heroSection.classList.remove('hidden');
+            fixedHeader.classList.remove('visible');
+            resultsSection.classList.remove('visible');
+            errorState.classList.remove('visible');
+            heroSearchInput.value = '';
+            headerSearchInput.value = '';
+        }
+
+        // Get tier class for styling
+        function getTierClass(tier, pos, isRetired) {
+            if (isRetired) return 'tier-retired';
+
+            if (typeof tier === 'string') {
+                const t = tier.toLowerCase();
+                if (t.includes('t1')) return 'tier-t1';
+                if (t.startsWith('ht2')) return 'tier-ht2';
+                if (t.startsWith('lt2')) return 'tier-lt2';
+                if (t.startsWith('ht3')) return 'tier-ht3';
+                if (t.startsWith('lt3')) return 'tier-lt3';
+                return 'tier-default';
+            }
+            if (tier === 1) return 'tier-t1';
+            if (tier === 2) return pos === 0 ? 'tier-ht2' : 'tier-lt2';
+            if (tier === 3) return pos === 0 ? 'tier-ht3' : 'tier-lt3';
+            return 'tier-default';
+        }
+
+        // Format tier display
+        function formatTier(tier, pos) {
+            if (typeof tier === 'string') return tier.toUpperCase();
+            const prefix = pos === 0 ? 'H' : 'L';
+            return `${prefix}T${tier}`;
+        }
+
+        // Create tier card HTML
+        function createTierCard(game, ranking, platform) {
+            // Filter out og_vanilla
+            if (game === 'og_vanilla') return '';
+
+            // Check for retired status - can be boolean true/false or integer 0/1
+            const isRetired = ranking.retired === true || ranking.retired === 1 || ranking.is_retired === true || ranking.is_retired === 1;
+            // Don't pass isRetired to getTierClass so tier badge keeps normal colors
+            const tierClass = getTierClass(ranking.tier, ranking.pos, false);
+            const tierDisplay = formatTier(ranking.tier, ranking.pos);
+            const peakDisplay = ranking.peak_tier ? formatTier(ranking.peak_tier, ranking.peak_pos) : null;
+            const showPeak = peakDisplay && peakDisplay !== tierDisplay && !peakDisplay.toLowerCase().includes('null');
+
+            // Format game name display - remove underscores and apply special names
+            let displayName = game;
+            if (game === 'diacrystal') displayName = 'Diacrystal';
+            else if (game === 'pot') displayName = 'Dia Pot';
+            else if (game === 'nethpot') displayName = 'Neth Pot';
+            else displayName = game.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+            let iconUrl;
+            if (platform === 'mctiers') {
+                const gameIcon = game === 'smp' ? 'pearl' : game;
+                iconUrl = `assets/tiers/mctiers/${gameIcon}.svg`;
+            } else if (platform === 'subtiers') {
+                iconUrl = `assets/tiers/subtiers/${game}.svg`;
+            } else {
+                iconUrl = `assets/tiers/mctiers/uhc.svg`;
+            }
+
+            return `
+                <div class="tier-card${isRetired ? ' retired' : ''}">
+                    <img src="${iconUrl}" alt="${displayName}" class="tier-icon" onerror="this.src='assets/tiers/mctiers/sword.svg'">
+                    <div class="tier-info">
+                        <div class="tier-name">${displayName}</div>
+                    </div>
+                    <div class="tier-badge ${tierClass}">${tierDisplay}</div>
+                    ${showPeak ? `
+                        <div class="peak-popup">
+                            <span class="peak-label">Peak Career</span>
+                            <span class="peak-value ${getTierClass(ranking.peak_tier, ranking.peak_pos)}">${peakDisplay}</span>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Handle search
+        async function handleSearch(input) {
+            if (!input.trim()) return;
+
+            // Switch to results view
+            mainContainer.classList.remove('initial');
+            mainContainer.classList.add('results-active');
+            heroSection.classList.add('hidden');
+            fixedHeader.classList.add('visible');
+            resultsSection.classList.add('visible');
+
+            // Show loading
+            loadingState.style.display = 'flex';
+            errorState.classList.remove('visible');
+            dataContainer.style.display = 'none';
+
+            // Sync search inputs
+            headerSearchInput.value = input;
+
+            try {
+                let uuid = input.replace(/-/g, '');
+                const isUUID = /^[0-9a-f]{32}$/i.test(uuid);
+
+                if (!isUUID) {
+                    const playerDbResponse = await fetch(`https://playerdb.co/api/player/minecraft/${input}`);
+                    const playerDbData = await playerDbResponse.json();
+                    if (!playerDbData.success) throw new Error('Player not found.');
+                    uuid = playerDbData.data.player.raw_id;
+                }
+
+                // Set avatar immediately
+                document.getElementById('player-avatar').src = `https://skins.mcstats.com/bust/${uuid}`;
+                document.getElementById('player-name').textContent = input;
+
+                // Check if this is the special player and apply golden aura
+                const specialNames = ['pheological', 'pheo', 'phe'];
+                const isSpecialPlayer = specialNames.some(name =>
+                    input.toLowerCase().includes(name) || uuid === 'f5a515aeb8d04d8ea8ae8be8ab062e07'
+                );
+
+                if (isSpecialPlayer) {
+                    document.querySelector('.player-avatar-glow').classList.add('golden');
+                    document.getElementById('player-avatar').classList.add('golden');
+                    document.getElementById('player-name').classList.add('golden');
+                    document.querySelector('.player-stats').classList.add('golden');
+                } else {
+                    document.querySelector('.player-avatar-glow').classList.remove('golden');
+                    document.getElementById('player-avatar').classList.remove('golden');
+                    document.getElementById('player-name').classList.remove('golden');
+                    document.querySelector('.player-stats').classList.remove('golden');
+                }
+
+                // Fetch ALL THREE APIs in parallel (including Shieldless UHC)
+                const [mctiersRes, subtiersRes, shieldlessRes] = await Promise.all([
+                    fetch(`https://mctiers.com/api/profile/${uuid}`).then(r => r.ok ? r.json() : null).catch(() => null),
+                    fetch(`https://subtiers.net/api/profile/${uuid}`).then(r => r.ok ? r.json() : null).catch(() => null),
+                    fetch(`https://corsproxy.io/?${encodeURIComponent(`https://www.shieldlessuhc.xyz/api/profile/${uuid}`)}`).then(r => r.ok ? r.json() : null).catch(() => null)
+                ]);
+
+                let totalRanked = 0;
+                let listsTracked = 0;
+                let foundAnyData = false;
+
+                // Process MCTiers
+                const mctSection = document.getElementById('mctiers-section');
+                const mctGrid = document.getElementById('mctiers-grid');
+                if (mctiersRes && mctiersRes.rankings && Object.keys(mctiersRes.rankings).length > 0) {
+                    const keys = Object.keys(mctiersRes.rankings);
+                    const cards = keys.map(k => createTierCard(k, mctiersRes.rankings[k], 'mctiers')).filter(card => card !== '');
+                    if (cards.length > 0) {
+                        mctSection.style.display = 'block';
+                        mctGrid.innerHTML = cards.join('');
+                        totalRanked += cards.length;
+                        listsTracked++;
+                        foundAnyData = true;
+                        document.getElementById('player-name').textContent = mctiersRes.name;
+                        document.getElementById('player-region').textContent = mctiersRes.region;
+                    } else {
+                        mctSection.style.display = 'none';
+                    }
+                } else {
+                    mctSection.style.display = 'none';
+                }
+
+                // Process SubTiers
+                const subSection = document.getElementById('subtiers-section');
+                const subGrid = document.getElementById('subtiers-grid');
+                if (subtiersRes && subtiersRes.rankings && Object.keys(subtiersRes.rankings).length > 0) {
+                    const keys = Object.keys(subtiersRes.rankings);
+                    const cards = keys.map(k => createTierCard(k, subtiersRes.rankings[k], 'subtiers')).filter(card => card !== '');
+                    if (cards.length > 0) {
+                        subSection.style.display = 'block';
+                        subGrid.innerHTML = cards.join('');
+                        totalRanked += cards.length;
+                        listsTracked++;
+                        foundAnyData = true;
+                        if (!mctiersRes) {
+                            document.getElementById('player-name').textContent = subtiersRes.name;
+                            document.getElementById('player-region').textContent = subtiersRes.region;
+                        }
+                    } else {
+                        subSection.style.display = 'none';
+                    }
+                } else {
+                    subSection.style.display = 'none';
+                }
+
+                // Process Shieldless UHC
+                const shieldSection = document.getElementById('shieldless-section');
+                const shieldGrid = document.getElementById('shieldless-grid');
+                if (shieldlessRes && shieldlessRes.tier &&
+                    !shieldlessRes.tier.toLowerCase().includes('null') &&
+                    shieldlessRes.tier.trim() !== '') {
+
+                    shieldSection.style.display = 'block';
+                    shieldGrid.innerHTML = createTierCard('shieldless', {
+                        tier: shieldlessRes.tier,
+                        pos: 0,
+                        peak_tier: shieldlessRes.peak_tier,
+                        peak_pos: 0,
+                        retired: shieldlessRes.is_retired
+                    }, 'shieldless');
+
+                    totalRanked += 1;
+                    listsTracked++;
+                    foundAnyData = true;
+
+                    // Set player name/region from shieldless if we don't have it from other sources
+                    if (!mctiersRes && !subtiersRes) {
+                        document.getElementById('player-name').textContent = shieldlessRes.minecraft_username || input;
+                        document.getElementById('player-region').textContent = shieldlessRes.region || 'N/A';
+                    }
+                } else {
+                    shieldSection.style.display = 'none';
+                }
+
+                // Update stats
+                document.getElementById('stat-ranked').textContent = totalRanked;
+                document.getElementById('stat-lists').textContent = listsTracked;
+
+                // Check if ANY data exists from ANY of the three APIs
+                if (!foundAnyData) {
+                    throw new Error('No public ranking data found for this player on any tierlist.');
+                }
+
+                // Hide loading, show data
+                loadingState.style.display = 'none';
+                dataContainer.style.display = 'grid';
+
+            } catch (err) {
+                loadingState.style.display = 'none';
+                dataContainer.style.display = 'none';
+                errorState.classList.add('visible');
+                document.getElementById('error-message').textContent = err.message;
+            }
+        }
+
+        // Event listeners
+        heroSearchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleSearch(heroSearchInput.value);
+        });
+
+        headerSearchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleSearch(headerSearchInput.value);
+        });
+    </script>
+</body>
+</html>
