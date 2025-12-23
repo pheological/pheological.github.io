@@ -823,14 +823,44 @@
         }
 
         .tier-card.retired {
-            background: rgba(167, 139, 250, 0.08);
-            border-color: rgba(167, 139, 250, 0.25);
-            opacity: 0.8;
+            background: rgba(167, 139, 250, 0.15);
+            border-color: rgba(167, 139, 250, 0.4);
+            box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
         }
 
         .tier-card.retired:hover {
-            background: rgba(167, 139, 250, 0.12);
-            border-color: rgba(167, 139, 250, 0.4);
+            background: rgba(167, 139, 250, 0.2);
+            border-color: rgba(167, 139, 250, 0.6);
+            transform: translateX(4px) scale(1.02);
+        }
+
+        .retired-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: rgba(192, 132, 252, 0.7);
+            text-shadow: 0 0 15px rgba(167, 139, 250, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            z-index: 2;
+        }
+
+        .tier-card.retired:hover .retired-label {
+            opacity: 1;
+        }
+
+        .tier-card.retired:hover .tier-icon,
+        .tier-card.retired:hover .tier-info,
+        .tier-card.retired:hover .tier-badge {
+            opacity: 0.2;
+            filter: blur(2px);
+            transition: all 0.3s ease;
         }
 
         .tier-icon {
@@ -1393,6 +1423,7 @@
 
             return `
                 <div class="tier-card${isRetired ? ' retired' : ''}">
+                    ${isRetired ? '<span class="retired-label">Retired</span>' : ''}
                     <img src="${iconUrl}" alt="${displayName}" class="tier-icon" onerror="this.src='assets/tiers/mctiers/sword.svg'">
                     <div class="tier-info">
                         <div class="tier-name">${displayName}</div>
