@@ -17,8 +17,8 @@ const baseSpeed = 0.05;
 const rangeSpeed = 0.1;
 const baseWidth = 10;
 const rangeWidth = 20;
-const baseHue = 210; // Dark Blue
-const rangeHue = 40;  // Shift towards lighter blue
+const baseHue = 180; // Starting from turquoise
+const rangeHue = 60;  // Range to include light green, turquoise, and blue
 const baseTTL = 50;
 const rangeTTL = 100;
 const noiseStrength = 100;
@@ -107,11 +107,12 @@ function updateRay(i) {
 
 function drawRay(x, y1, y2, life, ttl, width, hue) {
   let gradient;
+  let opacity = fadeInOut(life, ttl) * 0.5; // Increase opacity to 50%
 
   gradient = ctx.a.createLinearGradient(x, y1, x, y2);
-  gradient.addColorStop(0, `hsla(${hue},100%,65%,0)`);
-  gradient.addColorStop(0.5, `hsla(${hue},100%,65%,${fadeInOut(life, ttl)})`);
-  gradient.addColorStop(1, `hsla(${hue},100%,65%,0)`);
+  gradient.addColorStop(0, `hsla(${hue},80%,40%,0)`);
+  gradient.addColorStop(0.5, `hsla(${hue},80%,40%,${opacity})`);
+  gradient.addColorStop(1, `hsla(${hue},80%,40%,0)`);
 
   ctx.a.save();
   ctx.a.beginPath();
