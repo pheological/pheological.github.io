@@ -26,11 +26,11 @@ window.aurora = (function() {
     const rangeSpeed = 0.1;
     const baseWidth = 10;
     const rangeWidth = 20;
-    const baseHue = 180;
-    const rangeHue = 60;
+    const baseHue = 200;
+    const rangeHue = 125;
     const baseTTL = 50;
     const rangeTTL = 100;
-    const noiseStrength = 100;
+    const noiseStrength = 150;
     const xOff = 0.0015;
     const yOff = 0.0015;
     const zOff = 0.0015;
@@ -138,7 +138,7 @@ window.aurora = (function() {
     function drawRay(x, y1, y2, life, ttl, width, hue) {
         let gradient = ctx.a.createLinearGradient(x, y1, x, y2);
         gradient.addColorStop(0, `hsla(${hue},100%,30%,0)`);
-        gradient.addColorStop(0.5, `hsla(${hue},100%,30%,${fadeInOut(life, ttl) * 0.5})`);
+        gradient.addColorStop(0.5, `hsla(${hue},100%,20%,${fadeInOut(life, ttl) * 0.5})`);
         gradient.addColorStop(1, `hsla(${hue},100%,30%,0)`);
         ctx.a.save();
         ctx.a.beginPath();
@@ -170,7 +170,7 @@ window.aurora = (function() {
 
     function render() {
         ctx.b.save();
-        ctx.b.filter = 'blur(12px)';
+        ctx.b.filter = 'blur(20px)';
         ctx.a.globalCompositeOperation = 'lighter';
         ctx.b.drawImage(canvas.a, 0, 0);
         ctx.b.restore();
